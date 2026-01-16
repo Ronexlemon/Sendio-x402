@@ -6,6 +6,7 @@
     "dev": "nodemon src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
+    "prisma-generate": " npx prisma generate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -18,12 +19,18 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.0.9",
     "nodemon": "^3.1.11",
+    "prisma": "^7.2.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.1.0",
+    "@prisma/client": "^7.2.0",
     "cors": "^2.8.5",
+    "ethers": "^6.16.0",
     "express": "^5.2.1",
-    "morgan": "^1.10.1"
+    "morgan": "^1.10.1",
+    "pg": "^8.17.1",
+    "viem": "^2.44.4"
   }
 }
