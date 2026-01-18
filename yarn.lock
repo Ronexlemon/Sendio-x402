@@ -39,6 +39,13 @@
   resolved "https://registry.yarnpkg.com/@chevrotain/utils/-/utils-10.5.0.tgz#0ee36f65b49b447fbac71b9e5af5c5c6c98ac057"
   integrity sha512-hBzuU5+JjB2cqNZyszkDHZgOSrUUT8V3dhgRl8Q9Gp6dAj/H5+KILGjbhDpc3Iy9qmqlm/akuOI2ut9VUtzJxQ==
 
+"@crypto.com/facilitator-client@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@crypto.com/facilitator-client/-/facilitator-client-1.0.4.tgz#c0c6557b8dbf737a334a3a56e7c5b41772932e00"
+  integrity sha512-cHqy/8femcAdv44DdAvxCTCHfFDTrg7hp9sYwjhkmZo8TigEEDFjjYHibCp0RzocBcfYD/n6KNsCNQ86UwUZ9A==
+  dependencies:
+    ethers "^6.15.0"
+
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
   resolved "https://registry.npmjs.org/@cspotcode/source-map-support/-/source-map-support-0.8.1.tgz"
@@ -726,7 +733,7 @@ etag@^1.8.1:
   resolved "https://registry.npmjs.org/etag/-/etag-1.8.1.tgz"
   integrity sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==
 
-ethers@^6.16.0:
+ethers@^6.15.0, ethers@^6.16.0:
   version "6.16.0"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-6.16.0.tgz#fff9b4f05d7a359c774ad6e91085a800f7fccf65"
   integrity sha512-U1wulmetNymijEhpSEQ7Ct/P/Jw9/e7R1j5XIbPRydgV2DjLVMsULDlNksq3RQnFgKoLlZf88ijYtWEXcPa07A==
