@@ -65,3 +65,71 @@ const settlePayment = async(requirementDetails:PaymentRequirements,headerDetails
 
     
 }
+
+
+
+
+
+class PaymentProcessor {
+  facilitator: Facilitator;
+
+  constructor() {
+    this.facilitator = new Facilitator({
+      network: CronosNetwork.CronosTestnet,
+    });
+  }
+
+  generateRequirements(details: PaymentRequirements) {
+    return this.facilitator.generatePaymentRequirements({
+      payTo: details.payTo,
+      description: `Payment for Order #: ${details.description_order_Number}`,
+      maxAmountRequired: details.amount,
+    });
+  }
+
+  async requestHeader(details: PaymentHeader) {
+    const signer = getSigner(details.private_key);
+    return await this.facilitator.generatePaymentHeader({
+      to: details.to,
+      value: details.value,
+      signer,
+      validBefore: Math.floor(Date.now() / 1000) + 600,
+    });
+  }
+
+  async getBody(
+    requirementDetails: PaymentRequirements,
+    headerDetails: PaymentHeader
+  ) {
+    const requirements = this.generateRequirements(requirementDetails);
+    const header = await this.requestHeader(headerDetails);
+
+    return this.facilitator.buildVerifyRequest(header, requirements);
+  }
+
+  async verifyResponse(
+    requirementDetails: PaymentRequirements,
+    headerDetails: PaymentHeader
+  ) {
+    const body = await this.getBody(requirementDetails, headerDetails);
+    const response = await this.facilitator.verifyPayment(body);
+
+    if (response.isValid) {
+      return await this.settlePayment(requirementDetails, headerDetails);
+    }
+
+    return response;
+  }
+
+  async settlePayment(
+    requirementDetails: PaymentRequirements,
+    headerDetails: PaymentHeader
+  ) {
+    const body = await this.getBody(requirementDetails, headerDetails);
+    const settlementResponse = await this.facilitator.settlePayment(body);
+
+    return settlementResponse;
+  }
+}
+
+export  {PaymentProcessor};
