@@ -4,12 +4,6 @@ import { prisma } from "../../config/prisma";
 import { generateWallet } from "../../hooks/wallet";
 
 const createWallet = async (phoneNumber: string) => {
-  const existing = await prisma.wallet.findUnique({
-    where: { phoneNumber },
-  });
-  if (existing) {
-    throw new Error(`Wallet already exists for ${phoneNumber}`);
-  }
 
   const { address, private_Key } = generateWallet();
 
@@ -23,6 +17,15 @@ const createWallet = async (phoneNumber: string) => {
 
   return wallet;
 };
+
+const isWalletExits = async(phoneNumber:string)=>{
+  const existing = await prisma.wallet.findUnique({
+    where: { phoneNumber },
+  });
+  return !!existing
+
+
+}
 
 
 const getWalletByPhoneNumber = async (phoneNumber: string) => {
@@ -46,4 +49,4 @@ const getWalletByPhoneNumber = async (phoneNumber: string) => {
   return wallet;
 };
 
-export {createWallet,getWalletByPhoneNumber,deleteWalletByPhoneNumber}
+export {createWallet,getWalletByPhoneNumber,deleteWalletByPhoneNumber,isWalletExits}
