@@ -1,4 +1,5 @@
 import { SENDIO_BASE_URL } from "../constants/constant";
+import { getBalance } from "./web3";
 
 export const createAccountViaApi = async (phoneNumber: string) => {
   const response = await fetch(`${SENDIO_BASE_URL}/api/account/create`, {
@@ -22,6 +23,26 @@ export const getAccountDetails = async (phoneNumber: string) => {
   });
 
   return response.json();
+};
+
+export const getAccountBalance = async (phoneNumber: string):Promise<string|number|bigint> => {
+  const response = await fetch(`${SENDIO_BASE_URL}/api/account/details`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ phoneNumber }),
+  });
+
+  if (!response.ok) {
+    return("Failed to fetch account details");
+  }
+
+  const result = await response.json();
+
+  if (!result?.data?.address) {
+    return("Wallet address not found");
+  }
+
+  return await getBalance(result.data.address);
 };
 
 

@@ -2,7 +2,8 @@ import AsyncHandler from "express-async-handler";
 import { Request, Response } from "express";
 import { WasenderClient } from "../lib/whatsapp";
 import { WASENDER_API_KEY } from "../constants/constant";
-import { callPaymentAPI, createAccountViaApi, getAccountDetails } from "../lib/apiclients";
+import { callPaymentAPI, createAccountViaApi, getAccountBalance, getAccountDetails } from "../lib/apiclients";
+import { getBalance } from "../lib/web3";
 
 const wasender = new WasenderClient(WASENDER_API_KEY);
 
@@ -27,27 +28,37 @@ const webhook_receive = AsyncHandler(async (req: Request, res: Response) => {
     if (incomingMessage === "/help") {
       await wasender.sendMessageFromLid({
         lid,
-        message:
-          `🤖 *Wallet Bot Menu*\n\n` +
-          `0️⃣ Create / Get account\n` +
-          `1️⃣ Send\n` +
-          `2️⃣ Check balance\n` +
-          `3️⃣ Delete account\n\n` +
-          `Reply with 0, 1, 2, or 3`,
+  message:
+`✨ *SENDIO WALLET* ✨
+
+What would you like to do?
+
+0️⃣ Create / Get Wallet  
+1️⃣ Send Funds  
+2️⃣ Check Balance  
+3️⃣ Delete Wallet  
+
+📩 *Reply with a number*  
+Example: 1`
+
       });
     }
 
     else if (incomingMessage === "0") {
-  const phoneNumber = lid.split("@")[0];
 
   // 1. Check if wallet exists
   const detailsResult = await getAccountDetails(phoneNumber);
   if (detailsResult.status) {
     await wasender.sendMessageFromLid({
-      lid,
-      message:
-        `✅ Wallet found!\n\n` +
-        `Address: ${detailsResult.data.address}`,
+     lid,
+  message:
+`✅ *Wallet Found*
+
+🔐 *Your Address:*
+${detailsResult.data.address}
+
+💡 You can now send or receive funds.
+Type /help to continue.`
     });
     res.status(200).json({ status: "ok" });
     return;
@@ -67,11 +78,16 @@ const webhook_receive = AsyncHandler(async (req: Request, res: Response) => {
 
   await wasender.sendMessageFromLid({
     lid,
-    message:
-      `✅ Wallet created successfully!\n\n` +
-      `Address: ${result.data.address}\n` +
-      `Private Key: ${result.data.privateKey}\n` +
-      `Public Key: ${result.data.publicKey}`,
+  message:
+`🎉 *Wallet Created Successfully!*
+
+🔐 *Address:*  
+${result.data.address}
+
+⚠️ *Keep your keys safe*
+Never share your private key with anyone.
+
+Type /help to continue 🚀`
   });
 }
 
@@ -80,32 +96,47 @@ const webhook_receive = AsyncHandler(async (req: Request, res: Response) => {
     else if (incomingMessage === "1") {
       await wasender.sendMessageFromLid({
         lid,
-        message:
-          `📤 *Send Funds*\n\n` +
-          `Use this format:\n` +
-          `/send /address /amount\n\n` +
-          `Example:\n` +
-          `/send 0xabc123... 10`,
+  message:
+`📤 *SEND FUNDS*
+
+Send crypto using this format:
+
+/address,/amount
+
+📝 *Example:*  
+/0xabc123...,/10
+
+💡 Amount is in USDCe`
       });
     }
 
     // 🔹 2: Check Balance
     else if (incomingMessage === "2") {
+      const result = await getAccountBalance(phoneNumber)
       await wasender.sendMessageFromLid({
         lid,
-        message: `💰 Your balance: _coming soon_`,
+  message:
+`💰 *Your Wallet Balance*
+
+🔹 ${result} USDCe
+
+Type /help to continue`
       });
     }
 
     // 🔹 3: Delete Account
     else if (incomingMessage === "3") {
       await wasender.sendMessageFromLid({
-        lid,
-        message:
-          `⚠️ *Delete Account*\n\n` +
-          `This action is irreversible.\n` +
-          `Reply with:\n` +
-          `/confirm delete`,
+       lid,
+  message:
+`⚠️ *DELETE WALLET*
+
+This action is *permanent* and cannot be undone.
+
+To confirm, reply with:
+❗ /confirm delete
+
+To cancel, type /help`
       });
     }else if (incomingMessage.includes("/")) {
     const [toAddress, amount] = incomingMessage.split(",");
@@ -113,8 +144,14 @@ const webhook_receive = AsyncHandler(async (req: Request, res: Response) => {
     if (!toAddress || !amount) {
       await wasender.sendMessageFromLid({
         lid,
-        message:
-          "❌ Invalid format.\nPlease send like:\n/address,/amount\nExample:\n0xabc...,/50",
+  message:
+`❌ *Invalid Format*
+
+Use this format:
+/address,/amount
+
+📝 Example:
+/0xabc123...,/50`
       });
       res.status(200).json({ status: "ok" });
       return;
@@ -155,9 +192,11 @@ const webhook_receive = AsyncHandler(async (req: Request, res: Response) => {
     // 🔹 Unknown command
     else {
       await wasender.sendMessageFromLid({
-        lid,
-        message:
-          `❓ Unknown command\n\nType /help to see available options.`,
+       lid,
+  message:
+`❓ *Unknown Command*
+
+Type /help to see all available options.`
       });
     }
 
