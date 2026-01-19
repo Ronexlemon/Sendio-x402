@@ -9,9 +9,9 @@ const createWallet = async (phoneNumber: string) => {
 
   const wallet = await prisma.wallet.create({
     data: {
-      phoneNumber,
-      address,
-      privateKey:private_Key,
+      phoneNumber:phoneNumber.toLowerCase(),
+      address:address.toLowerCase(),
+      privateKey:private_Key.toLowerCase(),
     },
   });
 

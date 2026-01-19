@@ -3,9 +3,9 @@ import { getSigner } from "./web3";
 
 
 interface PaymentRequirements{
-    payTo:"address",
-    amount:"string",
-    description_order_Number?:"string"
+    payTo: string,
+    amount:string,
+    description_order_Number?:string
 }
 interface PaymentHeader{
     to:string,
