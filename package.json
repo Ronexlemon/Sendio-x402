@@ -4,9 +4,9 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "build": "prisma generate && tsc",
+    "build": "tsc",
     "postbuild":"npx prisma migrate deploy",
-    "start": "node dist/server.js",
+    "start": "node ./dist/server.js",
     "prisma-generate": " npx prisma generate",
     "prisma-migrate":"npx prisma migrate dev",
     "prisma-deploy":"npx prisma migrate deploy",
