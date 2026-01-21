@@ -22,10 +22,11 @@ const CreateAccount = asyncHandler(async(req:Request,res:Response)=>{
 }
 
         const accountDetails = await createWallet(phoneNumber);
+        const { privateKey, ...safeAccountDetails } = accountDetails;
         res.status(201).json({
       status: true,
       message: "Wallet created successfully",
-      data: accountDetails,
+      data: safeAccountDetails,
     });
 
 
