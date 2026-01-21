@@ -44,33 +44,43 @@ const CreateAccount = asyncHandler(async(req:Request,res:Response)=>{
 
 const getAccountdetails = asyncHandler(
   async (req: Request, res: Response) => {
-    const { phoneNumber } = req.body ||  {};
+    try {
+      const { phoneNumber } = req.body || {};
 
-    if (!phoneNumber) {
-      res.status(400).json({
-        status: false,
-        message: "phoneNumber is required",
+      if (!phoneNumber) {
+        res.status(400).json({
+          status: false,
+          message: "phoneNumber is required",
+        });
+        return;
+      }
+
+      const details = await getWalletByPhoneNumber(phoneNumber);
+
+      if (!details) {
+        res.status(404).json({
+          status: false,
+          message: "Wallet account not found",
+        });
+        return;
+      }
+
+      res.status(200).json({
+        status: true,
+        message: "Wallet details fetched successfully",
+        data: details,
       });
-      return;
-    }
+    } catch (error) {
+      console.error("getAccountdetails error:", error);
 
-    const details = await getWalletByPhoneNumber(phoneNumber);
-
-    if (!details) {
-      res.status(404).json({
+      res.status(500).json({
         status: false,
-        message: "Wallet account not found",
+        message: "Internal server error",
       });
-      return;
     }
-
-    res.status(200).json({
-      status: true,
-      message: "Wallet details fetched successfully",
-      data: details,
-    });
   }
 );
+
 
 
 export {getAccountdetails,CreateAccount}
